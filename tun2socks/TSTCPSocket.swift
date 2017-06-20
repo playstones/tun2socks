@@ -89,13 +89,16 @@ struct SocketDict {
     
     static func newKey() -> Int {
         objc_sync_enter(socketDict)
-        var key = arc4random()
+        var key = Int(arc4random())
         let sd = socketDict
-        while let _ = sd[Int(key)] {
-            key = arc4random()
+        
+        
+        while (sd[key] != nil) {
+            key = Int(arc4random())
         }
+        
         objc_sync_exit(socketDict)
-        return Int(key)
+        return key
     }
 }
 

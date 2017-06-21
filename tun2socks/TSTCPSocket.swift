@@ -88,10 +88,13 @@ class SocketDict {
     }
     
     static func newKey() -> Int {
-        var key = Int(arc4random())
-        while let _ = socketDict[key] {
-            key = Int(arc4random())
+        objc_sync_enter(socketDict)
+        var key = 10000 + Int(arc4random_uniform(55535))
+        let sd = socketDict
+        while let _ = sd[key] {
+            key = 10000 + Int(arc4random_uniform(55535))
         }
+        objc_sync_exit(socketDict)
         return key
     }
 }

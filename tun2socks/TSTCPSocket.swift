@@ -76,7 +76,7 @@ func tcp_err_func(_ arg: UnsafeMutableRawPointer?, error: err_t) {
     SocketDict.lookup(arg!)?.errored(error)
 }
 
-struct SocketDict {
+class SocketDict {
     static var socketDict: [Int:TSTCPSocket] = [:]
     
     static func lookup(_ id: Int) -> TSTCPSocket? {
@@ -88,16 +88,10 @@ struct SocketDict {
     }
     
     static func newKey() -> Int {
-        objc_sync_enter(socketDict)
         var key = Int(arc4random())
-        let sd = socketDict
-        
-        
-        while (sd[key] != nil) {
+        while let _ = socketDict[key] {
             key = Int(arc4random())
         }
-        
-        objc_sync_exit(socketDict)
         return key
     }
 }
